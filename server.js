@@ -3,6 +3,7 @@ import router from './Routes/routes.product.js'
 import bodyParser from 'body-parser'
 import { connectDB } from './Config/db.js'
 import 'dotenv/config'
+import { error } from './Middleware/error.js'
 
 const app = express()
 connectDB();
@@ -14,11 +15,7 @@ app.use(bodyParser.json())
 app.use('/',router)
 
 // global error handler
-app.use((err,req,res,next)=>{
-    res.json({
-        message:err
-    })
-})
+app.use(error)
 
 app.listen(process.env.PORT,()=>{
     console.log(`Server is running at port ${process.env.PORT}`);
