@@ -1,5 +1,6 @@
 import express from 'express'
-import router from './Routes/routes.product.js'
+import productRouter from './Routes/product.routes.js'
+import authRouter from './Routes/auth.routes.js'
 import bodyParser from 'body-parser'
 import { connectDB } from './Config/db.js'
 import 'dotenv/config'
@@ -12,7 +13,8 @@ connectDB();
 app.use(bodyParser.json())
 
 // route mouting
-app.use('/',router)
+app.use('/',productRouter)
+app.use('/',authRouter)
 
 // global error handler
 app.use(error)
