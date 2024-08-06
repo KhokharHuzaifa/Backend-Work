@@ -1,5 +1,6 @@
 import { userModel } from "../Model/user.model.js";
 import bcrypt from 'bcrypt'
+import jwt from'jsonwebtoken';
 
 export default class authController {
 
@@ -32,8 +33,14 @@ export default class authController {
 
             if(!matchedPassword) return next(new Error('Password doesn\'t match'))
 
-            res.json({
-                message:'Login Successfully'
+            const token = jwt.sign({
+                id:user._id,
+                email:user.email,
+                username:user.username 
+            }, process.env.JWT_SECRET, {expiresIn:'1h'});
+
+            res.cookie('auth-token', token, {maxAge:900000, httpOnly:true}).json({
+                message:'Login Successfully and cookie set'
             })
             
         } catch (error) {
