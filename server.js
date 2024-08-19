@@ -5,13 +5,15 @@ import bodyParser from 'body-parser'
 import { connectDB } from './Config/db.js'
 import 'dotenv/config'
 import { error } from './Middleware/error.js'
+import cookieParser from 'cookie-parser'
 
 const app = express()
 connectDB();
 
 // body parser middleware
 app.use(bodyParser.json())
-
+// cookie parser
+app.use(cookieParser())
 // route mouting
 app.use('/',productRouter)
 app.use('/',authRouter)

@@ -20,26 +20,27 @@ export default class authController {
 
     async Login(req,res,next){
         try {
-            const user = req.body;
+            const body = req.body;
 
-            if(!user.email) return next(new Error('Please provide Email'));
-            if(!user.password) return next(new Error('Please provide Password'));
+            if(!body.email) return next(new Error('Please provide Email'));
+            if(!body.password) return next(new Error('Please provide Password'));
 
-            const matchedUser = await userModel.findOne({email:user.email})
+            const matchedUser = await userModel.findOne({email:body.email})
             
             if(matchedUser==null) return next(new Error('Email doesn\'t Exist'));
             
-            const matchedPassword = await bcrypt.compare(user.password, matchedUser.password);
+            const matchedPassword = await bcrypt.compare(body.password, matchedUser.password);
 
             if(!matchedPassword) return next(new Error('Password doesn\'t match'))
 
             const token = jwt.sign({
-                id:user._id,
-                email:user.email,
-                username:user.username 
+                id:matchedUser._id,
+                email:matchedUser.email,
+                username:matchedUser.username,
+                role:matchedUser.roles
             }, process.env.JWT_SECRET, {expiresIn:'1h'});
 
-            res.cookie('auth-token', token, {maxAge:900000, httpOnly:true}).json({
+            res.cookie('auth_token', token, {maxAge:900000, httpOnly:true}).json({
                 message:'Login Successfully and cookie set'
             })
             
